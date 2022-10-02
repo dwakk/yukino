@@ -16,5 +16,5 @@ client.on("ready", () => {
 	}, 5000);
 
 	client.user.setStatus("idle")
-	console.log(chalk.red(`Connecté sur le client ${client.user.tag}!`))
+	console.log(chalk.red(`[CLIENT]: Connecté sur ${client.user.tag}!`))
 });
