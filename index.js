@@ -15,6 +15,7 @@ const config = require('./config.json');
 require('dotenv').config()
 
 const fs = require('fs')
+const { connect } = require('mongoose');
 
 client.aliases = new Collection()
 client.slashCommands = new Collection();
@@ -29,5 +30,10 @@ fs.readdirSync('./handlers').forEach((handler) => {
   require(`./handlers/${handler}`)(client)
 });
 
+(async () => {
+	connect(process.env.MONGO).then(() => {
+		console.log('[DB]: Connectée')
+	}).catch(console.error)
+})()
 
 client.login(process.env.TOKEN)
