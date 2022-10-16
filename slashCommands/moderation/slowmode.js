@@ -1,75 +1,62 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ApplicationCommandType, ButtonStyle } = require('discord.js');
+const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
+const ms = require('ms');
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
 module.exports = {
-	name: "ban",
-	description: "Ban a member",
-	cooldown: 3000,
+	name: "slowmode",
+	description: "Set a slowmode",
 	type: ApplicationCommandType.ChatInput,
-    botPerms: ["BanMembers"],
-    userPerms: ["BanMembers"],
+	cooldown: 3000,
     options: [
         {
-            name: 'member',
-            description: 'The member you want to ban',
-            type: 6,
-            required: true
-        },
-        {
-            name: 'reason',
-            description: "Reason of the ban",
+            name: "cooldown",
+            description: "Cooldown for the slowmode. Example values: 5s, 1m, 1h (Max: 6h)",
+            required: true,
             type: 3,
-            required: false,
         }
     ],
+    userPerms: ["ManageChannels"],
+    botPerms: ["ManageChannels"],
 	run: async (client, interaction, data) => {
-        let target =  interaction.options.getUser('member');
-        let raison = interaction.options.getString('reason');
-        let mod = interaction.member;
-
-        target = interaction.guild.members.cache.get(target.id);
-
-        if(!target.bannable || target.id === client.id || target.id === mod.id) {
+		const cooldown = interaction.options.getString('cooldown');
+        const d = (ms(cooldown))/1000
+        if (interaction.channel.rateLimitPerUser === d) {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - Je ne peux pas bannir ce membre")
-                .setColor("Red")
-                return interaction.reply({embeds: [embed], ephemeral: true});
+                .setDescription("💢 - Le mode lent est déjà activé avec cette durée")
+                .setColor("Red");
+                return  interaction.reply({embeds: [embed], ephemeral: true});
             } else {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - I can't ban this member")
-                .setColor("Red")
+                .setDescription("💢 - Slowmode is already enabled with this cooldown")
+                .setColor("Red");
                 return interaction.reply({embeds: [embed], ephemeral: true});
             }
         }
-
-        if(mod.roles.highest.comparePositionTo(interaction.guild.members.cache.get(target.id).roles.highest) >= 0 && mod.id != interaction.guild.ownerId) {
-           if (data.guild.language === "fr") {
-            const embed = new EmbedBuilder()
-            .setDescription(":x: - Ce membre a un rôle plus haut que vous")
-            .setColor("Red");
-            return interaction.reply({embeds: [embed], ephemeral: true});
-           } else {
-            const embed = new EmbedBuilder()
-            .setDescription(":x: - This member has an higher role than yours")
-            .setColor("Red");
-            return interaction.reply({embeds: [embed], ephemeral: true});
-           }
+        if (d > 21600) {
+            if (data.guild.language === "fr") {
+                const embed = new EmbedBuilder()
+                .setDescription("💢 - La durée spécifiée est trop longue. La durée maximale est de 6h")
+                .setColor("Red");
+                return interaction.reply({embeds: [embed], ephemeral: true});
+            } else {
+                const embed = new EmbedBuilder()
+                .setDescription("💢 - The cooldown is too long. Maxiaml cooldown: 6h")
+                .setColor("Red");
+                return interaction.reply({embeds: [embed], ephemeral: true});
+            }
         }
-
         if (data.guild.language === "fr") {
             const embed = new EmbedBuilder()
-            .setTitle("Membre banni")
-            .setDescription(`${target.user.tag} a été banni`)
+            .setTitle("Mode lent activé")
+            .setDescription("Le mode lent a été activé dans ce salon")
             .addFields(
-                { name: "ID", value: target.id},
-                { name: "Raison", value: raison ? raison : "N/A"},
-                { name: "Modérateur", value: `<@${mod.id}>`}
+                { name: "Durée", value: cooldown},
+                { name: "Modérateur", value: `<@${interaction.member.id}>`}
             )
-            .setThumbnail(target.displayAvatarURL({dynamic: true}))
-            .setColor("Red")
+            .setColor("Green")
             .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
             .setTimestamp();
             interaction.reply({embeds: [embed]});
@@ -79,8 +66,8 @@ module.exports = {
                 .setTitle("Logs: Modération")
                 .setThumbnail(interaction.member.user.avatarURL())
                 .addFields(
-                    { name: "Ban", value: `\`<@${target.id}\``},
-                    { name: "Raison", value: raison ? raison : "N/A"},
+                    { name: "Mode lent", value: `<#${interaction.channel.id}>`},
+                    { name: "Durée", value: cooldown},
                     { name: "Modérateur", value: `<@${interaction.member.id}>`}
                 )
                 .setColor("Blurple")
@@ -95,18 +82,16 @@ module.exports = {
                     ch.send({embeds: [log]});
                 }
             };
-            return target.ban({reason: raison ? raison : "N/A"});
+            return interaction.channel.setRateLimitPerUser(d);
         } else {
             const embed = new EmbedBuilder()
-            .setTitle("Member banned")
-            .setDescription(`${target.user.tag} has been banned`)
+            .setTitle("Slowmode enabled")
+            .setDescription("Slowmode has been enabled in this channel")
             .addFields(
-                { name: "ID", value: target.id},
-                { name: "Reason", value: raison ? raison : "None"},
-                { name: "Moderator", value: `<@${mod.id}>`}
+                { name: "Cooldown", value: cooldown},
+                { name: "Moderator", value: `<@${interaction.member.id}>`}
             )
-            .setThumbnail(target.displayAvatarURL({dynamic: true}))
-            .setColor("Red")
+            .setColor("Green")
             .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
             .setTimestamp();
             interaction.reply({embeds: [embed]});
@@ -116,8 +101,8 @@ module.exports = {
                 .setTitle("Logs: Moderation")
                 .setThumbnail(interaction.member.user.avatarURL())
                 .addFields(
-                    { name: "Ban", value: `\`<@${target.id}\``},
-                    { name: "Reason", value: raison ? raison : "None"},
+                    { name: "Slowmode", value: `<#${interaction.channel.id}>`},
+                    { name: "Cooldown", value: cooldown},
                     { name: "Moderator", value: `<@${interaction.member.id}>`}
                 )
                 .setColor("Blurple")
@@ -134,7 +119,7 @@ module.exports = {
                     ch.send({embeds: [log]});
                 }
             };
-            return target.ban({reason: raison ? raison : "None"});
+            return interaction.channel.setRateLimitPerUser(d);
         };
 	}
 };

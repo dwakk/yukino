@@ -1,51 +1,59 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ApplicationCommandType, ButtonStyle } = require('discord.js');
+const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
 module.exports = {
-	name: "clear",
-	description: "Delete a certain amount of messages",
-	cooldown: 3000,
+	name: "setlang",
+    cat: "admin",
+    description: "Change Yukino's language",
 	type: ApplicationCommandType.ChatInput,
-    userPerms: ["ManageChannels"],
-    botPerms: ["ManageChannels"],
+	cooldown: 0,
+    userPerms: ["Administrator"],
     options: [
         {
-            name: "number",
-            description: "Amount of messages you want to delete",
-            type: 4,
+            name: "language",
+            description: "The languageyou want Yukino to be",
+            type: 3,
             required: true,
-            min_value: 1,
-            max_value: 99,
-        },
+            choices: [
+                { name: "English", value: "en"},
+                { name: "Français", value: "fr"},
+            ]
+        }
     ],
 	run: async (client, interaction, data) => {
-        let nombre =  interaction.options.getInteger('number')
-        let mbr = interaction.member.id
-        let e = "Suppression en cours..."
-        if (data.guild.language === "en") {
-            e = "Deleting messages..."
-        }
-        interaction.reply(e)
-        interaction.channel.bulkDelete(nombre).then(() => {
-            interaction.deleteReply()
+        let lang = interaction.options.getString('language');
+        if (data.guild.language === lang) {
+            if (lang === "fr") {
+                const embed = new EmbedBuilder()
+                .setDescription("💢 - Je suis déjà en français!")
+                .setColor("Aqua");
+                return interaction.reply({embeds: [embed], ephemeral: true});
+            } else {
+                const embed = new EmbedBuilder()
+                .setDescription("💢 - My language is already set to english!")
+                .setColor("Aqua");
+                return interaction.reply({embeds: [embed], ephemeral: true});
+            };
+        } else {
+            data.guild.language = lang;
+            await data.guild.save();
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setTitle("Messages supprimés")
-                .setDescription(`${nombre} messages ont été supprimés par <@${mbr}>`)
-                .setColor('Green')
+                .setTitle("Langue changée")
+                .setDescription("✅ - Je suis maintenant en français!")
+                .setColor("Green")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
                     const ch = client.channels.cache.get(data.guild.addons.logs.channel);
                     const log = new EmbedBuilder()
-                    .setTitle("Logs: Modération")
+                    .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Clear", value: `<#${interaction.channel.id}>`},
-                        { name: "Nombre", value: `\`${nombre}\``},
-                        { name: "Modérateur", value: `<@${interaction.member.id}>`}
+                        { name: "Langue", value: "`français`"},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")
                     .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
@@ -58,24 +66,23 @@ module.exports = {
                     } else {
                         ch.send({embeds: [log]});
                     }
-                };
-                return interaction.channel.send({embeds: [embed]});
+                }
+                return interaction.reply({embeds: [embed]});
             } else {
                 const embed = new EmbedBuilder()
-                .setTitle("Messages cleared")
-                .setDescription(`${nombre} messages have been deleted by <@${mbr}>`)
-                .setColor('Green')
+                .setTitle("Language changed")
+                .setDescription("✅ - My language is now english!")
+                .setColor("Green")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
                     const ch = client.channels.cache.get(data.guild.addons.logs.channel);
                     const log = new EmbedBuilder()
-                    .setTitle("Logs: Moderation")
+                    .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Clear", value: `<#${interaction.channel.id}>`},
-                        { name: "Amount", value: `\`${nombre}\``},
-                        { name: "Moderator", value: `<@${interaction.member.id}>`}
+                        { name: "Language", value: "`english`"},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")
                     .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
@@ -90,9 +97,9 @@ module.exports = {
                     } else {
                         ch.send({embeds: [log]});
                     }
-                };
-                return interaction.channel.send({embeds: [embed]});
-            }
-        }
-	)}
+                }
+                return interaction.reply({embeds: [embed]});
+            };
+        };
+	}
 };

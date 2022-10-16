@@ -1,5 +1,5 @@
 const client = require('..');
 
-client.on("threadCreate", (t) => {
-    t.join()
+client.on("threadCreate", async thread => {
+    thread.join()
 });

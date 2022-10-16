@@ -3,10 +3,10 @@ const chalk = require('chalk');
 
 const { PermissionsBitField } = require('discord.js');
 const { Routes } = require('discord-api-types/v9');
-const { REST } = require('@discordjs/rest')
+const { REST } = require('@discordjs/rest');
 
 const AsciiTable = require('ascii-table');
-const table = new AsciiTable().setHeading('Commandes', 'Status').setBorder('|', '=', "0", "0")
+const table = new AsciiTable().setHeading('Commandes', 'Statut').setBorder('|', '=', "0", "0");
 
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -31,10 +31,10 @@ module.exports = (client) => {
 				});
 			
 				if(slashCommand.name) {
-						client.slashCommands.set(slashCommand.name, slashCommand)
-						table.addRow(file.split('.js')[0], '✅')
+						client.slashCommands.set(slashCommand.name, slashCommand);
+						table.addRow(file.split('.js')[0], '✅');
 				} else {
-						table.addRow(file.split('.js')[0], '⛔')
+						table.addRow(file.split('.js')[0], '⛔');
 				}
 		}
 		
@@ -47,7 +47,7 @@ module.exports = (client) => {
 					Routes.applicationCommands(CLIENT_ID),
 					{ body: slashCommands }
 				);
-				console.log(chalk.yellow('Commandes slash • Enregistrées'))
+				console.log(chalk.green('[COMMANDES SLASH]: Enregistrées'));
 			} catch (error) {
 				console.log(error);
 			}

@@ -1,5 +1,6 @@
 {
 	"messages": {
-		"COOLDOWN_MESSAGE": "Vous êtes en cooldown de <duration>!"
+		"COOLDOWN_MESSAGE_EN": "You are on a <duration> cooldown",
+		"COOLDOWN_MESSAGE_FR": "Vous devez patienter <duration>"
 	}
 }

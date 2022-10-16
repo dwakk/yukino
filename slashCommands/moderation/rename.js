@@ -1,75 +1,56 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ApplicationCommandType, ButtonStyle } = require('discord.js');
+const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
 module.exports = {
-	name: "ban",
-	description: "Ban a member",
-	cooldown: 3000,
+	name: "rename",
+	description: "Rename a member",
 	type: ApplicationCommandType.ChatInput,
-    botPerms: ["BanMembers"],
-    userPerms: ["BanMembers"],
+	cooldown: 3000,
     options: [
         {
-            name: 'member',
-            description: 'The member you want to ban',
+            name: "member",
+            description: "The member you want to rename",
             type: 6,
-            required: true
+            required: true,
         },
         {
-            name: 'reason',
-            description: "Reason of the ban",
+            name: "nickname",
+            description: "Nickname for the member",
             type: 3,
             required: false,
-        }
+        },
     ],
+    botPerms: ["ManageNicknames"],
+    userPerms: ["ManageNicknames"],
 	run: async (client, interaction, data) => {
-        let target =  interaction.options.getUser('member');
-        let raison = interaction.options.getString('reason');
-        let mod = interaction.member;
-
-        target = interaction.guild.members.cache.get(target.id);
-
-        if(!target.bannable || target.id === client.id || target.id === mod.id) {
+        let member =  interaction.options.getUser('member');
+        let nick =  interaction.options.getString('nickname');
+        member = interaction.guild.members.cache.get(member.id);
+        if (member.displayName === nick | "Yukino Simp") {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - Je ne peux pas bannir ce membre")
-                .setColor("Red")
+                .setDescription("💢 - Inutile de renommer ce membre!")
+                .setColor("Red");
                 return interaction.reply({embeds: [embed], ephemeral: true});
             } else {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - I can't ban this member")
-                .setColor("Red")
+                .setDescription("💢 - It's useless to rename this member!")
+                .setColor("Red");
                 return interaction.reply({embeds: [embed], ephemeral: true});
             }
         }
-
-        if(mod.roles.highest.comparePositionTo(interaction.guild.members.cache.get(target.id).roles.highest) >= 0 && mod.id != interaction.guild.ownerId) {
-           if (data.guild.language === "fr") {
-            const embed = new EmbedBuilder()
-            .setDescription(":x: - Ce membre a un rôle plus haut que vous")
-            .setColor("Red");
-            return interaction.reply({embeds: [embed], ephemeral: true});
-           } else {
-            const embed = new EmbedBuilder()
-            .setDescription(":x: - This member has an higher role than yours")
-            .setColor("Red");
-            return interaction.reply({embeds: [embed], ephemeral: true});
-           }
-        }
-
         if (data.guild.language === "fr") {
             const embed = new EmbedBuilder()
-            .setTitle("Membre banni")
-            .setDescription(`${target.user.tag} a été banni`)
+            .setTitle("Membre renommé")
+            .setDescription(`${member.user.tag} a été renommé`)
             .addFields(
-                { name: "ID", value: target.id},
-                { name: "Raison", value: raison ? raison : "N/A"},
-                { name: "Modérateur", value: `<@${mod.id}>`}
+                { name: "Ancien pseudo", value: member.displayName},
+                { name: "Modérateur", value: `<@${interaction.member.id}>`},
             )
-            .setThumbnail(target.displayAvatarURL({dynamic: true}))
-            .setColor("Red")
+            .setThumbnail(member.displayAvatarURL({dynamic: true}))
+            .setColor("Green")
             .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
             .setTimestamp();
             interaction.reply({embeds: [embed]});
@@ -79,8 +60,8 @@ module.exports = {
                 .setTitle("Logs: Modération")
                 .setThumbnail(interaction.member.user.avatarURL())
                 .addFields(
-                    { name: "Ban", value: `\`<@${target.id}\``},
-                    { name: "Raison", value: raison ? raison : "N/A"},
+                    { name: "Membre renommé", value: `<@${member.id}>`},
+                    { name: "Ancien pseudo", value: member.displayName},
                     { name: "Modérateur", value: `<@${interaction.member.id}>`}
                 )
                 .setColor("Blurple")
@@ -95,18 +76,17 @@ module.exports = {
                     ch.send({embeds: [log]});
                 }
             };
-            return target.ban({reason: raison ? raison : "N/A"});
+            await member.setNickname(nick ? nick: "Yukino Simp")
         } else {
             const embed = new EmbedBuilder()
-            .setTitle("Member banned")
-            .setDescription(`${target.user.tag} has been banned`)
+            .setTitle("Member renamed")
+            .setDescription(`${member.user.tag} has been renamed`)
             .addFields(
-                { name: "ID", value: target.id},
-                { name: "Reason", value: raison ? raison : "None"},
-                { name: "Moderator", value: `<@${mod.id}>`}
+                { name: "Old nickname", value: member.displayName},
+                { name: "Moderator", value: `<@${interaction.member.id}>`}
             )
-            .setThumbnail(target.displayAvatarURL({dynamic: true}))
-            .setColor("Red")
+            .setThumbnail(member.displayAvatarURL({dynamic: true}))
+            .setColor("Green")
             .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
             .setTimestamp();
             interaction.reply({embeds: [embed]});
@@ -116,8 +96,8 @@ module.exports = {
                 .setTitle("Logs: Moderation")
                 .setThumbnail(interaction.member.user.avatarURL())
                 .addFields(
-                    { name: "Ban", value: `\`<@${target.id}\``},
-                    { name: "Reason", value: raison ? raison : "None"},
+                    { name: "Member", value: `<@${member.id}>`},
+                    { name: "Old nickname", value: member.displayName},
                     { name: "Moderator", value: `<@${interaction.member.id}>`}
                 )
                 .setColor("Blurple")
@@ -134,7 +114,7 @@ module.exports = {
                     ch.send({embeds: [log]});
                 }
             };
-            return target.ban({reason: raison ? raison : "None"});
-        };
+            await member.setNickname(nick ? nick: "Yukino Simp")
+        }
 	}
 };

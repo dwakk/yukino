@@ -13,7 +13,7 @@ client.on('interactionCreate', async interaction => {
                 const perms = new EmbedBuilder()
                 .setDescription(`🚫 - ${interaction.user}, Vous n'avez pas la permission (\`${button.permissions}\`) pour exécuter cette commande!`)
                 .setColor('Red')
-                return interaction.reply({ embeds: [perms], ephemeral: true })
+                return interaction.reply({ embeds: [perms], ephemeral: true });
             }
         }
         await button.run(client, interaction);
