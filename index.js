@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js'
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds, 
+		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildMessages, 
 		GatewayIntentBits.GuildPresences, 
 		GatewayIntentBits.GuildMessageReactions, 
@@ -11,8 +12,9 @@ const client = new Client({
 });
 
 require('dotenv').config();
+global.fetch = require('cross-fetch')
 
-const fs = require('fs')
+const fs = require('fs');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
 

@@ -4,75 +4,75 @@ function sleep (time) {
   }
 
 module.exports = {
-	name: "setnsfw",
-	description: "Manage a channel's nsfw level",
+	name: "welcome",
+	description: "Manage the welcome system",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
-    userPerms: ["ManageChannels"],
-    botPerms: ["ManageChannels"],
+    userPerms: ["Administrator"],
     options: [
         {
             name: "enable",
-            description: "Set a channel as NSFW",
+            description: "Enable the welcome system",
             type: 1,
             options: [
                 {
                     name: "channel",
-                    description: "The channem you want to set as NSFW",
+                    description: "The channel you want to set as welcome channel",
                     type: 7,
+                    required: true,
+                },
+                {
+                    name: "message",
+                    description: "The welcome message. Add <member> to ping the member who joined",
+                    type: 3,
                     required: false,
                 },
             ],
         },
         {
             name: "disable",
-            description: "Set a channel as non-NSFW",
+            description: "Disable the welcome system",
             type: 1,
-            options: [
-                {
-                    name: "channel",
-                    description: "The channel you want to set as NSFW",
-                    type: 7,
-                    required: false,
-                },
-            ],
         },
     ],
 	run: async (client, interaction, data) => {
-		if (interaction.options._subcommand === "enable") {
-            let channel =  interaction.options.getChannel('channel');
-            if (!channel) {
-                channel = interaction.channel
+        if (interaction.options._subcommand === "enable") {
+            const channel = interaction.options.getChannel('channel');
+            let message = interaction.options.getString('message');
+            if (!message) {
+                message = data.guild.addons.welcome.message
             }
-            if (channel.nsfw === true) {
+            if (channel.isText === false) {
                 if (data.guild.language === "fr") {
                     const embed = new EmbedBuilder()
-                    .setDescription("💢 - Ce salon est déjà NSFW")
+                    .setDescription(":x: - Ce salon n'est pas textuel")
                     .setColor("Red");
                     return interaction.reply({embeds: [embed], ephemeral: true});
                 } else {
                     const embed = new EmbedBuilder()
-                    .setDescription("💢 - This channel is already set as NSFW")
+                    .setDescription(":x: - This channel isn't textual")
                     .setColor("Red");
                     return interaction.reply({embeds: [embed], ephemeral: true});
                 }
             }
+            data.guild.addons.welcome = { enabled: true, channel: channel.id, message: message}
+            await data.guild.save();
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - Le salon <#${channel.id}> est maintenant NSFW`)
+                .setTitle("Messages de bienvenue")
+                .setDescription(`✅ - Les messages de bienvenue seront envoyés dans le salon <#${channel.id}>`)
                 .setColor("Green")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
                     const ch = client.channels.cache.get(data.guild.addons.logs.channel);
                     const log = new EmbedBuilder()
-                    .setTitle("Logs: Modération")
+                    .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Salon", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`activé`"},
-                        { name: "Modérateur:", value: `<@${interaction.member.id}>`}
+                        { name: "Messages de bienvenue", value: `<#${channel.id}>`},
+                        { name: "Message", value: `\`${data.guild.addons.welcome.message}\``},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")
                     .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
@@ -86,24 +86,23 @@ module.exports = {
                         ch.send({embeds: [log]});
                     }
                 }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(true)
+                return interaction.reply({embeds: [embed]});
             } else {
                 const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - The channel <#${channel.id}> is now set as NSFW`)
+                .setTitle("Welcome messages")
+                .setDescription(`✅ - Welcome messages will be sent in the channel <#${channel.id}>`)
                 .setColor("Green")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
                     const ch = client.channels.cache.get(data.guild.addons.logs.channel);
                     const log = new EmbedBuilder()
-                    .setTitle("Logs: Moderation")
+                    .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Channel", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`enabled`"},
-                        { name: "Moderator:", value: `<@${interaction.member.id}>`}
+                        { name: "Welcome messages", value: `<#${channel.id}>`},
+                        { name: "Message", value: `\`${data.guild.addons.welcome.message}\``},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")
                     .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
@@ -112,50 +111,46 @@ module.exports = {
                         const embed = new EmbedBuilder()
                         .setDescription("Logs channel not found. It has maybe been deleted!")
                         .setColor("Red");
-                        sleep(5000).then(() => {
-                            interaction.channel.send({embeds: [embed], ephemeral: true});
-                        });
+                        interaction.channel.send({embeds: [embed], ephemeral: true});
                     } else {
                         ch.send({embeds: [log]});
                     }
                 }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(true)
-            };
-        } else if (interaction.options._subcommand === "disable") {
-            let channel =  interaction.options.getChannel('channel');
-            if (!channel) {
-                channel = interaction.channel
+                return interaction.reply({embeds: [embed]});
             }
-            if (channel.nsfw === false) {
+        }
+        if (interaction.options._subcommand === "disable") {
+            if (data.guild.addons.welcome.enabled === false) {
                 if (data.guild.language === "fr") {
                     const embed = new EmbedBuilder()
-                    .setDescription("💢 - Ce salon est déjà non-NSFW")
+                    .setDescription("💢 - Les messages de bienvenue sont déjà désactivés")
                     .setColor("Red");
                     return interaction.reply({embeds: [embed], ephemeral: true});
                 } else {
                     const embed = new EmbedBuilder()
-                    .setDescription("💢 - This channel is already set as non-NSFW")
+                    .setDescription("💢 - The welcome system is already disabled")
                     .setColor("Red");
                     return interaction.reply({embeds: [embed], ephemeral: true});
                 }
             }
+            data.guild.addons.welcome = { enabled: false, channel: "null" };
+            await data.guild.save();
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - Le salon <#${channel.id}> est maintenant non-NSFW`)
+                .setTitle("Messages de bienvenue")
+                .setDescription(`✅ - Les messages de bienvenue seront envoyés dans le salon <#${channel.id}>`)
                 .setColor("Green")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
                     const ch = client.channels.cache.get(data.guild.addons.logs.channel);
                     const log = new EmbedBuilder()
-                    .setTitle("Logs: Modération")
+                    .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Salon", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`désactivé`"},
-                        { name: "Modérateur:", value: `<@${interaction.member.id}>`}
+                        { name: "Messages de bienvenue", value: `<#${channel.id}>`},
+                        { name: "Message", value: `\`${data.guild.addons.welcome.message}\``},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")
                     .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
@@ -169,24 +164,23 @@ module.exports = {
                         ch.send({embeds: [log]});
                     }
                 }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(false)
+                return interaction.reply({embeds: [embed]});
             } else {
                 const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - The channel <#${channel.id}> is now set as non-NSFW`)
+                .setTitle("Welcome messages")
+                .setDescription(`✅ - Welcome messages will be sent in the channel <#${channel.id}>`)
                 .setColor("Green")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
                     const ch = client.channels.cache.get(data.guild.addons.logs.channel);
                     const log = new EmbedBuilder()
-                    .setTitle("Logs: Moderation")
+                    .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Channel", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`disabled`"},
-                        { name: "Moderator:", value: `<@${interaction.member.id}>`}
+                        { name: "Welcome messages", value: `<#${channel.id}>`},
+                        { name: "Message", value: `\`${data.guild.addons.welcome.message}\``},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")
                     .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
@@ -195,16 +189,13 @@ module.exports = {
                         const embed = new EmbedBuilder()
                         .setDescription("Logs channel not found. It has maybe been deleted!")
                         .setColor("Red");
-                        sleep(5000).then(() => {
-                            interaction.channel.send({embeds: [embed], ephemeral: true});
-                        });
+                        interaction.channel.send({embeds: [embed], ephemeral: true});
                     } else {
                         ch.send({embeds: [log]});
                     }
                 }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(false)
-            };
+                return interaction.reply({embeds: [embed]});
+            }
         }
 	}
 };

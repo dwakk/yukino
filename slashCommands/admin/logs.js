@@ -5,7 +5,6 @@ function sleep (time) {
 
 module.exports = {
 	name: "logs",
-    cat: "admin",
 	description: "Manage the log system",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,

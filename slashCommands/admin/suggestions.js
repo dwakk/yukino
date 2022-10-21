@@ -5,7 +5,6 @@ function sleep (time) {
 
 module.exports = {
 	name: "suggestion",
-    cat: "admin",
 	description: "Manage the suggestion system",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,

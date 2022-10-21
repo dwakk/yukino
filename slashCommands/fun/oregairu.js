@@ -2,8 +2,8 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ApplicationCommandType, B
 const reddit = require('reddit-fetch')
 
 module.exports = {
-	name: "yukino",
-	description: "Unstable | Get a random pic of Yukino (from r/Yukinoshitayukino)",
+	name: "oregairu",
+	description: "Unstable | Get a random pic of Oreigaru (from r/OreGairuSNAFU)",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [
@@ -30,16 +30,18 @@ module.exports = {
             };
         };
         reddit({
-            subreddit: "Yukinoshitayukino",
+            subreddit: "OreGairuSNAFU",
             allowNSFW: nsfw,
             allowCrossPost: false,
             allowVideo: false
         }).then(p => {
             console.log(p)
+            const img = p.url
+            const author = p.author
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setTitle(`Crédits: u/${p.author}`)
-                .setImage(p.url)
+                .setTitle(`Crédits: u/${author}`)
+                .setImage(img)
                 .setColor("Fuchsia")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
@@ -47,14 +49,14 @@ module.exports = {
 			    .addComponents([
 				    new ButtonBuilder()
     				.setLabel('Source')
-	    			.setURL(p.url)
+	    			.setURL(img)
 		    		.setStyle(ButtonStyle.Link)
 			])
             return interaction.reply({ embeds: [embed], components: [actionRow]});
             } else {
                 const embed = new EmbedBuilder()
-                .setTitle(`Credits: u/${p.author}`)
-                .setImage(p.url)
+                .setTitle(`Credits: u/${author}`)
+                .setImage(img)
                 .setColor("Fuchsia")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
@@ -62,7 +64,7 @@ module.exports = {
 			    .addComponents([
 				    new ButtonBuilder()
     				.setLabel('Source')
-	    			.setURL(p.url)
+	    			.setURL(img)
 		    		.setStyle(ButtonStyle.Link)
 			])
             return interaction.reply({ embeds: [embed], components: [actionRow]});

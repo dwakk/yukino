@@ -16,6 +16,21 @@ client.on('interactionCreate', async interaction => {
 		slow = "COOLDOWN_MESSAGE_FR";
 	}
 
+	if ((data.guild.blacklist).includes(interaction.member.id)) {
+		if (data.guild.language === "fr") {
+			const embed = new EmbedBuilder()
+			.setDescription("🚫 - Vous êtes dans la blacklist de ce serveur")
+			.setColor("Red");
+			return interaction.reply({embeds: [embed], ephemeral: true});
+		} else {
+			const embed = new EmbedBuilder()
+			.setDescription("🚫 - You are blacklisted in this server")
+			.setColor("Red");
+			return interaction.reply({embeds: [embed], ephemeral: true});
+		}
+	}
+
+
 		if (interaction.type == 4) {
 			if(slashCommand.autocomplete) {
 				const choices = [];

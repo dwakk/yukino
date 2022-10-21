@@ -5,7 +5,6 @@ function sleep (time) {
 
 module.exports = {
 	name: "setlang",
-    cat: "admin",
     description: "Change Yukino's language",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 0,
@@ -13,7 +12,7 @@ module.exports = {
     options: [
         {
             name: "language",
-            description: "The languageyou want Yukino to be",
+            description: "The language you want Yukino to be",
             type: 3,
             required: true,
             choices: [
