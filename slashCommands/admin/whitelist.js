@@ -3,208 +3,257 @@ function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
+function range(start, stop, step) {
+    if (typeof stop == 'undefined') {
+        stop = start;
+        start = 0;
+    }
+    if (typeof step == 'undefined') {
+        step = 1;
+    }
+    if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
+        return [];
+    }
+    var result = [];
+    for (var i = start; step > 0 ? i < stop : i > stop; i += step) {
+        result.push(i);
+    }
+    return result;
+};
+
 module.exports = {
-	name: "setnsfw",
-	description: "Manage a channel's nsfw level",
+	name: "whitelist",
+	description: "Manage the whitelist system",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
-    userPerms: ["ManageChannels"],
-    botPerms: ["ManageChannels"],
+    userPerms: ["Administrator"],
     options: [
         {
-            name: "enable",
-            description: "Set a channel as NSFW",
+            name: "add",
+            description: "Add a member to the whitelist",
             type: 1,
             options: [
                 {
-                    name: "channel",
-                    description: "The channem you want to set as NSFW",
-                    type: 7,
-                    required: false,
+                    name: "member",
+                    description: "The member you want to add to the whitelist",
+                    type: 6,
+                    required: true,
                 },
             ],
         },
         {
-            name: "disable",
-            description: "Set a channel as non-NSFW",
+            name: "remove",
+            description: "Remove a member from the whitelist",
             type: 1,
             options: [
                 {
-                    name: "channel",
-                    description: "The channel you want to set as NSFW",
-                    type: 7,
-                    required: false,
+                    name: "member",
+                    description: "The member you want to remove from the whitelist",
+                    type: 6,
+                    required: true,
                 },
             ],
+        },
+        {
+            name: "show",
+            description: "Show the server's whitelist",
+            type: 1,
         },
     ],
 	run: async (client, interaction, data) => {
-		if (interaction.options._subcommand === "enable") {
-            let channel =  interaction.options.getChannel('channel');
-            if (!channel) {
-                channel = interaction.channel
-            }
-            if (channel.nsfw === true) {
+        if (interaction .options._subcommand === "show") {
+            let ids = [];
+            let list = data.guild.whitelist;
+            for (let i of range(list.length))
+            ids.push(list[i])
+            ids = ids.map(id => {
+                return `<@${id}>\n`
+            });
+            ids = ids.join(" ")
+            if (ids.length < 1) {
                 if (data.guild.language === "fr") {
-                    const embed = new EmbedBuilder()
-                    .setDescription("💢 - Ce salon est déjà NSFW")
-                    .setColor("Red");
-                    return interaction.reply({embeds: [embed], ephemeral: true});
-                } else {
-                    const embed = new EmbedBuilder()
-                    .setDescription("💢 - This channel is already set as NSFW")
-                    .setColor("Red");
-                    return interaction.reply({embeds: [embed], ephemeral: true});
-                }
+                    ids = "La whitelist est vide";
+                } else ids = "The whitelist is empty";
             }
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - Le salon <#${channel.id}> est maintenant NSFW`)
-                .setColor("Green")
+                .setTitle("whitelist du serveur")
+                .setDescription(ids)
+                .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
-                if (data.guild.addons.logs.enabled === true) {
-                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
-                    const log = new EmbedBuilder()
-                    .setTitle("Logs: Modération")
-                    .setThumbnail(interaction.member.user.avatarURL())
-                    .addFields(
-                        { name: "Salon", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`activé`"},
-                        { name: "Modérateur:", value: `<@${interaction.member.id}>`}
-                    )
-                    .setColor("Blurple")
-                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
-                    .setTimestamp();
-                    if (!ch) {
-                        const embed = new EmbedBuilder()
-                        .setDescription("Salon de logs introuvable. Il a peut-être été supprimé!")
-                        .setColor("Red");
-                        interaction.channel.send({embeds: [embed], ephemeral: true});
-                    } else {
-                        ch.send({embeds: [log]});
-                    }
-                }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(true)
+                return interaction.reply({embeds: [embed]});
             } else {
                 const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - The channel <#${channel.id}> is now set as NSFW`)
-                .setColor("Green")
+                .setTitle("Server's whitelist")
+                .setDescription(ids)
+                .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
-                if (data.guild.addons.logs.enabled === true) {
-                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
-                    const log = new EmbedBuilder()
-                    .setTitle("Logs: Moderation")
-                    .setThumbnail(interaction.member.user.avatarURL())
-                    .addFields(
-                        { name: "Channel", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`enabled`"},
-                        { name: "Moderator:", value: `<@${interaction.member.id}>`}
-                    )
-                    .setColor("Blurple")
-                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
-                    .setTimestamp();
-                    if (!ch) {
-                        const embed = new EmbedBuilder()
-                        .setDescription("Logs channel not found. It has maybe been deleted!")
-                        .setColor("Red");
-                        sleep(5000).then(() => {
-                            interaction.channel.send({embeds: [embed], ephemeral: true});
-                        });
-                    } else {
-                        ch.send({embeds: [log]});
-                    }
-                }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(true)
-            };
-        } else if (interaction.options._subcommand === "disable") {
-            let channel =  interaction.options.getChannel('channel');
-            if (!channel) {
-                channel = interaction.channel
+                return interaction.reply({embeds: [embed]});
             }
-            if (channel.nsfw === false) {
-                if (data.guild.language === "fr") {
-                    const embed = new EmbedBuilder()
-                    .setDescription("💢 - Ce salon est déjà non-NSFW")
-                    .setColor("Red");
-                    return interaction.reply({embeds: [embed], ephemeral: true});
-                } else {
-                    const embed = new EmbedBuilder()
-                    .setDescription("💢 - This channel is already set as non-NSFW")
-                    .setColor("Red");
-                    return interaction.reply({embeds: [embed], ephemeral: true});
-                }
-            }
-            if (data.guild.language === "fr") {
-                const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - Le salon <#${channel.id}> est maintenant non-NSFW`)
-                .setColor("Green")
-                .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
-                .setTimestamp();
-                if (data.guild.addons.logs.enabled === true) {
-                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
-                    const log = new EmbedBuilder()
-                    .setTitle("Logs: Modération")
-                    .setThumbnail(interaction.member.user.avatarURL())
-                    .addFields(
-                        { name: "Salon", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`désactivé`"},
-                        { name: "Modérateur:", value: `<@${interaction.member.id}>`}
-                    )
-                    .setColor("Blurple")
-                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
-                    .setTimestamp();
-                    if (!ch) {
-                        const embed = new EmbedBuilder()
-                        .setDescription("Salon de logs introuvable. Il a peut-être été supprimé!")
-                        .setColor("Red");
-                        interaction.channel.send({embeds: [embed], ephemeral: true});
-                    } else {
-                        ch.send({embeds: [log]});
-                    }
-                }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(false)
-            } else {
-                const embed = new EmbedBuilder()
-                .setTitle("NSFW")
-                .setDescription(`✅ - The channel <#${channel.id}> is now set as non-NSFW`)
-                .setColor("Green")
-                .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
-                .setTimestamp();
-                if (data.guild.addons.logs.enabled === true) {
-                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
-                    const log = new EmbedBuilder()
-                    .setTitle("Logs: Moderation")
-                    .setThumbnail(interaction.member.user.avatarURL())
-                    .addFields(
-                        { name: "Channel", value: `<#${channel.id}>`},
-                        { name: "NSFW", value: "`disabled`"},
-                        { name: "Moderator:", value: `<@${interaction.member.id}>`}
-                    )
-                    .setColor("Blurple")
-                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
-                    .setTimestamp();
-                    if (!ch) {
-                        const embed = new EmbedBuilder()
-                        .setDescription("Logs channel not found. It has maybe been deleted!")
-                        .setColor("Red");
-                        sleep(5000).then(() => {
-                            interaction.channel.send({embeds: [embed], ephemeral: true});
-                        });
-                    } else {
-                        ch.send({embeds: [log]});
-                    }
-                }
-                interaction.reply({embeds: [embed]});
-                return channel.setNSFW(false)
-            };
         }
+        let member =  interaction.options.getUser("member");
+        let bl = data.guild.whitelist;
+        if (interaction.options._subcommand === "add") {
+            if (bl.includes(member.id)) {
+                if (data.guild.language === "fr") {
+                    const embed = new EmbedBuilder()
+                    .setDescription("💢 - Ce membre est déjà whitelist")
+                    .setColor("Red");
+                    return interaction.reply({embeds: [embed], ephemeral: true});
+                } else {
+                    const embed = new EmbedBuilder()
+                    .setDescription("💢 - This member is already whitelisted")
+                    .setColor("Red");
+                    return interaction.reply({embeds: [embed], ephemeral: true});
+                };
+            };
+            
+            data.guild.whitelist.push(member.id);
+            await data.guild.save();
+            
+            if (data.guild.language === "fr") {
+                const embed = new EmbedBuilder()
+                .setTitle("Membre whitelist")
+                .setDescription(`✅ - @<${member.id}> est maintenant whitelist`)
+                .setColor("Green")
+                .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
+                .setTimestamp();
+                if (data.guild.addons.logs.enabled === true) {
+                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
+                    const log = new EmbedBuilder()
+                    .setTitle("Logs: Admin")
+                    .setThumbnail(interaction.member.user.avatarURL())
+                    .addFields(
+                        { name: "whitelist", value: `<@${member.id}>`},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
+                    )
+                    .setColor("Blurple")
+                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
+                    .setTimestamp();
+                    if (!ch) {
+                        const embed = new EmbedBuilder()
+                        .setDescription("Salon de logs introuvable. Il a peut-être été supprimé!")
+                        .setColor("Red");
+                        interaction.channel.send({embeds: [embed], ephemeral: true});
+                    } else {
+                        ch.send({embeds: [log]});
+                    }
+                }
+                return interaction.reply({embeds: [embed]});
+            } else {
+                const embed = new EmbedBuilder()
+                .setTitle("Member whitelisted")
+                .setDescription(`✅ - <@${member.id}> is now whitelisted`)
+                .setColor("Green")
+                .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
+                .setTimestamp();
+                if (data.guild.addons.logs.enabled === true) {
+                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
+                    const log = new EmbedBuilder()
+                    .setTitle("Logs: Admin")
+                    .setThumbnail(interaction.member.user.avatarURL())
+                    .addFields(
+                        { name: "whitelist", value: `<@${member.id}>`},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
+                    )
+                    .setColor("Blurple")
+                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
+                    .setTimestamp();
+                    if (!ch) {
+                        const embed = new EmbedBuilder()
+                        .setDescription("Logs channel not found. It has maybe been deleted!")
+                        .setColor("Red");
+                        sleep(5000).then(() => {
+                            interaction.channel.send({embeds: [embed], ephemeral: true});
+                        });
+                    } else {
+                        ch.send({embeds: [log]});
+                    }
+                }
+                return interaction.reply({embeds: [embed]});
+            };
+        };
+        if (interaction.options._subcommand === "remove") {
+            if (!bl.includes(member.id)) {
+                if (data.guild.language === "fr") {
+                    const embed = new EmbedBuilder()
+                    .setDescription("💢 - Ce membre n'est pas dans la whitelist")
+                    .setColor("Red");
+                    return interaction.reply({embeds: [embed], ephemeral: true});
+                } else {
+                    const embed = new EmbedBuilder()
+                    .setDescription("💢 - This member is not whitelisted")
+                    .setColor("Red");
+                    return interaction.reply({embeds: [embed], ephemeral: true});
+                };
+            };
+            
+            data.guild.whitelist.pull(member.id);
+            await data.guild.save();
+
+            if (data.guild.language === "fr") {
+                const embed = new EmbedBuilder()
+                .setTitle("Membre unwhitelist")
+                .setDescription(`✅ - @<${member.id}> a été retiré de la whitelist`)
+                .setColor("Green")
+                .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
+                .setTimestamp();
+                if (data.guild.addons.logs.enabled === true) {
+                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
+                    const log = new EmbedBuilder()
+                    .setTitle("Logs: Admin")
+                    .setThumbnail(interaction.member.user.avatarURL())
+                    .addFields(
+                        { name: "Unwhitelist", value: `<@${member.id}>`},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
+                    )
+                    .setColor("Blurple")
+                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
+                    .setTimestamp();
+                    if (!ch) {
+                        const embed = new EmbedBuilder()
+                        .setDescription("Salon de logs introuvable. Il a peut-être été supprimé!")
+                        .setColor("Red");
+                        interaction.channel.send({embeds: [embed], ephemeral: true});
+                    } else {
+                        ch.send({embeds: [log]});
+                    }
+                }
+                return interaction.reply({embeds: [embed]});
+            } else {
+                const embed = new EmbedBuilder()
+                .setTitle("Member unwhitelisted")
+                .setDescription(`✅ - <@${member.id}> is now unwhitelisted`)
+                .setColor("Green")
+                .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
+                .setTimestamp();
+                if (data.guild.addons.logs.enabled === true) {
+                    const ch = client.channels.cache.get(data.guild.addons.logs.channel);
+                    const log = new EmbedBuilder()
+                    .setTitle("Logs: Admin")
+                    .setThumbnail(interaction.member.user.avatarURL())
+                    .addFields(
+                        { name: "Unwhitelist", value: `<@${member.id}>`},
+                        { name: "Admin:", value: `<@${interaction.member.id}>`}
+                    )
+                    .setColor("Blurple")
+                    .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
+                    .setTimestamp();
+                    if (!ch) {
+                        const embed = new EmbedBuilder()
+                        .setDescription("Logs channel not found. It has maybe been deleted!")
+                        .setColor("Red");
+                        sleep(5000).then(() => {
+                            interaction.channel.send({embeds: [embed], ephemeral: true});
+                        });
+                    } else {
+                        ch.send({embeds: [log]});
+                    }
+                }
+                return interaction.reply({embeds: [embed]});
+            };
+        };
 	}
 };

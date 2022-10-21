@@ -20,7 +20,6 @@ const chalk = require('chalk');
 
 client.aliases = new Collection();
 client.slashCommands = new Collection();
-client.buttons = new Collection();
 client.database = require('./db/mongoose');
 
 module.exports = client;

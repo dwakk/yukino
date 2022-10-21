@@ -2,7 +2,7 @@ const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
-const guildSchema = require("../../db/schemas/guild");
+
 function range(start, stop, step) {
     if (typeof stop == 'undefined') {
         stop = start;
@@ -63,8 +63,7 @@ module.exports = {
 	run: async (client, interaction, data) => {
         if (interaction .options._subcommand === "show") {
             let ids = [];
-            let list = await guildSchema.find({guildId: interaction.guildId});
-            list = list[0].blacklist;
+            let list = data.guild.blacklist;
             for (let i of range(list.length))
             ids.push(list[i])
             ids = ids.map(id => {
@@ -111,14 +110,9 @@ module.exports = {
                 };
             };
             
-            await guildSchema.findOneAndUpdate(
-                { guildId: interaction.guild.id },
-                {
-                    blacklist: {
-                        $push: [member.id]
-                    }
-                }
-            );
+            data.guild.blacklist.push(member.id);
+            await data.guild.save();
+            
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
                 .setTitle("Membre blacklist")
@@ -196,12 +190,9 @@ module.exports = {
                 };
             };
             
-            await guildSchema.findOneAndUpdate(
-                {guildId: interaction.guild.id},
-                {$pullAll: {
-                    blacklist: [member.id],
-                }},
-            );
+            data.guild.blacklist.pull(member.id);
+            await data.guild.save();
+
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
                 .setTitle("Membre unblacklist")
