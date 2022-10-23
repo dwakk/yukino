@@ -24,6 +24,7 @@ function range(start, stop, step) {
 module.exports = {
 	name: "whitelist",
 	description: "Manage the whitelist system",
+    fr: "Gestion du système de whitelist",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     userPerms: ["Administrator"],
@@ -78,7 +79,7 @@ module.exports = {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
                 .setTitle("whitelist du serveur")
-                .setDescription(ids)
+                .setDescription(`Les membres whitelist ne sont pas concernés par l'antilink et le filtrage de mots\n${ids}`)
                 .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
@@ -86,7 +87,7 @@ module.exports = {
             } else {
                 const embed = new EmbedBuilder()
                 .setTitle("Server's whitelist")
-                .setDescription(ids)
+                .setDescription(`Whitelisted members won't be affected by the antilink and the words filter\n${ids}`)
                 .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();

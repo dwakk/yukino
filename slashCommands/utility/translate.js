@@ -3,7 +3,8 @@ const trad = require('translate-google')
 
 module.exports = {
 	name: "translate",
-	description: "Fast translation",
+	description: "Fast text translation",
+    fr: "Traduction un texte",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

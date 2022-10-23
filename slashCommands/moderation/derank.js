@@ -5,7 +5,8 @@ function sleep (time) {
 
 module.exports = {
 	name: "derank",
-	description: "Delete all the roles of a member",
+	description: "Remove all the roles of a member",
+    fr: "Retire tous les rîles d'un membre",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     botPerms: ["ManageRoles"],

@@ -3,6 +3,7 @@ const { ApplicationCommandType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, A
 module.exports = {
 	name: 'avatar',
 	description: "Dispay a member's avatar",
+    fr: "Montre la photo de profil d'un membre",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

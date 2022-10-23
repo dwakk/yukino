@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
 	name: "setnsfw",
 	description: "Manage a channel's nsfw level",
+    fr: "Modifie les restrictions d'âge d'un salon",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     userPerms: ["ManageChannels"],

@@ -3,6 +3,7 @@ const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
 module.exports = {
 	name: "suggest",
 	description: "Send a suggestion to the staff team",
+    fr: "Envoie une suggestion au staff du serveur",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

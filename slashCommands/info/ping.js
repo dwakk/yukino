@@ -3,6 +3,7 @@ const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
 module.exports = {
 	name: "ping",
 	description: "Get Yukino's ping",
+	fr: "Envoie le ping de Yukino",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
 	run: async (client, interaction, data) => {

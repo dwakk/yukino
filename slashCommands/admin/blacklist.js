@@ -24,6 +24,7 @@ function range(start, stop, step) {
 module.exports = {
 	name: "blacklist",
 	description: "Manage the blacklist system",
+    fr: "Gestion du système de blacklist",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     userPerms: ["Administrator"],
@@ -69,7 +70,6 @@ module.exports = {
             ids = ids.map(id => {
                 return `<@${id}>\n`
             });
-            ids = ids.join(" ")
             if (ids.length < 1) {
                 if (data.guild.language === "fr") {
                     ids = "La blacklist est vide";
@@ -78,7 +78,7 @@ module.exports = {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
                 .setTitle("Blacklist du serveur")
-                .setDescription(ids)
+                .setDescription(`Les membres blacklist ne peuvent pas effectuer de commandes\n${ids.join("")}`)
                 .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
@@ -86,7 +86,7 @@ module.exports = {
             } else {
                 const embed = new EmbedBuilder()
                 .setTitle("Server's blacklist")
-                .setDescription(ids)
+                .setDescription(`Blacklisted members can't execute my commands\n${ids}`)
                 .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();

@@ -3,6 +3,7 @@ const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
 module.exports = {
 	name: "serverinfo",
 	description: "Get informations about the server",
+	fr: "Envoie les informations du serveur",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
 	run: async (client, interaction, data) => {

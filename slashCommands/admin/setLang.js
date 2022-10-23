@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
 	name: "setlang",
     description: "Change Yukino's language",
+    fr: "Change la langue du bot",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 0,
     userPerms: ["Administrator"],

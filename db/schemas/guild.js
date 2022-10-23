@@ -26,7 +26,6 @@ module.exports = mongoose.model("Guild", new mongoose.Schema({
         },
         antilink: {
             enabled: { type: Boolean, default: false },
-            links: ["discord.gg", ""],
         },
         wordfilter: {
             enabled: { type: Boolean, default: false },

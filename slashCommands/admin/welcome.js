@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
 	name: "welcome",
 	description: "Manage the welcome system",
+    fr: "Gestion du système de messages de bienvenue",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     userPerms: ["Administrator"],
@@ -138,8 +139,8 @@ module.exports = {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
                 .setTitle("Messages de bienvenue")
-                .setDescription(`✅ - Les messages de bienvenue seront envoyés dans le salon <#${channel.id}>`)
-                .setColor("Green")
+                .setDescription(`✅ - Les messages de bienvenue sont maintenant désactivés`)
+                .setColor("Orange")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
@@ -148,8 +149,7 @@ module.exports = {
                     .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Messages de bienvenue", value: `<#${channel.id}>`},
-                        { name: "Message", value: `\`${data.guild.addons.welcome.message}\``},
+                        { name: "Messages de bienvenue", value: "`désactivés`"},
                         { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")
@@ -168,8 +168,8 @@ module.exports = {
             } else {
                 const embed = new EmbedBuilder()
                 .setTitle("Welcome messages")
-                .setDescription(`✅ - Welcome messages will be sent in the channel <#${channel.id}>`)
-                .setColor("Green")
+                .setDescription(`✅ - Welcome messages are now disabled`)
+                .setColor("Orange")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
                 .setTimestamp();
                 if (data.guild.addons.logs.enabled === true) {
@@ -178,8 +178,7 @@ module.exports = {
                     .setTitle("Logs: Admin")
                     .setThumbnail(interaction.member.user.avatarURL())
                     .addFields(
-                        { name: "Welcome messages", value: `<#${channel.id}>`},
-                        { name: "Message", value: `\`${data.guild.addons.welcome.message}\``},
+                        { name: "Welcome messages", value: "`disabled`"},
                         { name: "Admin:", value: `<@${interaction.member.id}>`}
                     )
                     .setColor("Blurple")

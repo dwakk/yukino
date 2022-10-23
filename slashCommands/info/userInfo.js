@@ -3,6 +3,7 @@ const { ApplicationCommandType, EmbedBuilder } = require('discord.js');
 module.exports = {
 	name: "userinfo",
 	description: "Get informations about a member or yourself",
+    fr: "Envoie des informations sur un membre ou sur vous-même",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

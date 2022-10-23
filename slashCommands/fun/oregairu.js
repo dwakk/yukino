@@ -4,6 +4,7 @@ const reddit = require('reddit-fetch')
 module.exports = {
 	name: "oregairu",
 	description: "Unstable | Get a random pic of Oreigaru (from r/OreGairuSNAFU)",
+    fr: "Instable | Envoie une image aléatoire d'Oregairu (de r/OreGairuSNAFU)",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

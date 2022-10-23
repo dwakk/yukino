@@ -7,6 +7,7 @@ function sleep (time) {
 module.exports = {
 	name: "slowmode",
 	description: "Set a slowmode",
+    fr: "Gère le mode lent d'un salon",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

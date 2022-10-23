@@ -4,6 +4,7 @@ const weather = require('weather-js');
 module.exports = {
 	name: "weather",
 	description: "Get the weather of a location",
+    fr: "Donne la météo à de n'importe quelle ville du monde",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

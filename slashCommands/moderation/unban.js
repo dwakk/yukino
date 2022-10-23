@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
     name: "unban",
     description: "Unban a member",
+    fr: "Déban un membre",
     type: ApplicationCommandType.ChatInput,
     cooldown: 3000,
     botPerms: ["BanMembers"],

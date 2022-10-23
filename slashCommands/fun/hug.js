@@ -4,6 +4,7 @@ const api = new Kawaii("anonymous");
 module.exports = {
 	name: "hug",
 	description: "Hug a member",
+    fr: "Fait un câlin à un membre",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
 	name: "rename",
 	description: "Rename a member",
+    fr: "Renomme un membre",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

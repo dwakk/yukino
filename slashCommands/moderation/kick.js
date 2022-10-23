@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
 	name: "kick",
 	description: "Kick a member",
+    fr: "Expulse un membre",
 	cooldown: 3000,
 	type: ApplicationCommandType.ChatInput,
     botPerms: ["KickMembers"],

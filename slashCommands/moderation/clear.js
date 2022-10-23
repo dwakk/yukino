@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
 	name: "clear",
 	description: "Delete a certain amount of messages",
+    fr: "Supprime un certain nombre de messages",
 	cooldown: 3000,
 	type: ApplicationCommandType.ChatInput,
     userPerms: ["ManageChannels"],

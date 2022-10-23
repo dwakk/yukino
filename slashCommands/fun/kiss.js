@@ -4,6 +4,7 @@ const api = new Kawaii("anonymous");
 module.exports = {
 	name: "kiss",
 	description: "Kiss a member",
+    fr: "Embrasse un membre",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [
@@ -19,7 +20,7 @@ module.exports = {
         api.gif("kiss").then(res => {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setDescription(`**${interaction.member.user.username}** fait un bisou à **${member.username}**`)
+                .setDescription(`**${interaction.member.user.username}** embrasse **${member.username}**`)
                 .setImage(res)
                 .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})

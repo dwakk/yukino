@@ -4,6 +4,7 @@ const reddit = require('reddit-fetch')
 module.exports = {
 	name: "yukino",
 	description: "Unstable | Get a random pic of Yukino (from r/Yukinoshitayukino)",
+    fr: "Instable | Envoie une image de Yukino (de r/Yukinoshitayukino)",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [

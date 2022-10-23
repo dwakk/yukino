@@ -6,6 +6,7 @@ function sleep (time) {
 module.exports = {
 	name: "renew",
 	description: "Renew a channel",
+    fr: "Recréé un salon",
 	cooldown: 3000,
 	type: ApplicationCommandType.ChatInput,
     botPerms: ["ManageChannels"],

@@ -3,6 +3,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ApplicationCommandType, B
 module.exports = {
 	name: "invite",
 	description: "Get Yukino's invitation link",
+	fr: "Envoie le lien d'invitation de Yukino",
 	cooldown: 3000,
 	type: ApplicationCommandType.ChatInput,
 	run: async (client, interaction, data) => {
