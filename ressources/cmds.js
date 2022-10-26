@@ -3,10 +3,10 @@ const fs = require("fs");
 
 const admin = [];
 cmd = fs
-  .readdirSync("./slashCommands/info")
+  .readdirSync("./slashCommands/admin")
   .filter((file) => file.endsWith(".js"));
 for (const file of cmd) {
-  const slashCmd = require(`../slashCommands/info/${file}`);
+  const slashCmd = require(`../slashCommands/admin/${file}`);
   admin.push({
     name: slashCmd.name,
     description: slashCmd.description,
@@ -15,10 +15,10 @@ for (const file of cmd) {
 
 const adminfr = [];
 cmd = fs
-  .readdirSync("./slashCommands/info")
+  .readdirSync("./slashCommands/admin")
   .filter((file) => file.endsWith(".js"));
 for (const file of cmd) {
-  const slashCmd = require(`../slashCommands/info/${file}`);
+  const slashCmd = require(`../slashCommands/admin/${file}`);
   adminfr.push({
     name: slashCmd.name,
     description: slashCmd.fr,
