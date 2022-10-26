@@ -70,7 +70,7 @@ module.exports = {
                 return interaction.reply({embeds: [embed]});
             } else {
                 const embed = new EmbedBuilder()
-                .setTitle("Welcome messages")
+                .setTitle("Antilink")
                 .setDescription(`✅ - Only whitelisted members will be able to send invitation links`)
                 .setColor("Green")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})

@@ -36,7 +36,8 @@ module.exports = {
         .setDescription(s)
         .setColor("Aqua")
         .setFooter({iconURL: interaction.guild.iconURL(), text: interaction.guild.name})
-        channel.send({embeds: [embed]})
+        const msg = await channel.send({embeds: [embed], fetchReply: true});
+        msg.react("✅").then(() => msg.react("❌"));
         if (data.guild.language === "fr") {
             const embed = new EmbedBuilder()
             .setDescription("✅ - Suggestion envoyée")

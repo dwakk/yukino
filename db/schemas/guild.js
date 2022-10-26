@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = mongoose.model("Guild", new mongoose.Schema({
     guildId: String,
+    muteRole: { type: String, default: "null"},
     language: { type: String, default: 'en' },
     blacklist: [],
     whitelist: [],
@@ -17,7 +18,12 @@ module.exports = mongoose.model("Guild", new mongoose.Schema({
         welcome: {
             enabled: { type: Boolean, default: false },
             channel: { type: String, default: "null" },
-            message: { type: String, default: "Welcome to <server>, <member>!" },
+            message: { type: String, default: "Welcome to <server>, <member>! We are now <count> members!" },
+        },
+        goodbye: {
+            enabled: { type: Boolean, default: false },
+            channel: { type: String, default: "null" },
+            message: { type: String, default: "<member> left. We are now <count>" },
         },
         tickets: {
             enabled: { type: Boolean, default: false },
@@ -31,5 +37,9 @@ module.exports = mongoose.model("Guild", new mongoose.Schema({
             enabled: { type: Boolean, default: false },
             words: [],
         },
-    }},
+        economy: {
+            enabled: { type: Boolean, default: false },
+            shop: [],
+        },
+    }, strict: false },
 ));

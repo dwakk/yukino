@@ -13,38 +13,25 @@ module.exports = {
     botPerms: ["ManageChannels"],
     options: [
         {
-            name: "enable",
-            description: "Set a channel as NSFW",
-            type: 1,
-            options: [
-                {
-                    name: "channel",
-                    description: "The channem you want to set as NSFW",
-                    type: 7,
-                    required: false,
-                },
-            ],
+            name: "nsfw",
+            description: "Set the channel as nsfw ?",
+            type: 5,
+            required: true,
         },
         {
-            name: "disable",
-            description: "Set a channel as non-NSFW",
-            type: 1,
-            options: [
-                {
-                    name: "channel",
-                    description: "The channel you want to set as NSFW",
-                    type: 7,
-                    required: false,
-                },
-            ],
+            name: "channel",
+            description: "The channel you want to manage the nsfw level",
+            type: 7,
+            required: false,
         },
     ],
 	run: async (client, interaction, data) => {
-		if (interaction.options._subcommand === "enable") {
-            let channel =  interaction.options.getChannel('channel');
-            if (!channel) {
-                channel = interaction.channel
-            }
+        const enabled = interaction.options.getBoolean("nsfw");
+        let channel =  interaction.options.getChannel('channel');
+        if (!channel) {
+            channel = interaction.channel;
+        };
+		if (enabled === true) {
             if (channel.nsfw === true) {
                 if (data.guild.language === "fr") {
                     const embed = new EmbedBuilder()
@@ -123,11 +110,7 @@ module.exports = {
                 interaction.reply({embeds: [embed]});
                 return channel.setNSFW(true)
             };
-        } else if (interaction.options._subcommand === "disable") {
-            let channel =  interaction.options.getChannel('channel');
-            if (!channel) {
-                channel = interaction.channel
-            }
+        } else if (enabled === false) {
             if (channel.nsfw === false) {
                 if (data.guild.language === "fr") {
                     const embed = new EmbedBuilder()

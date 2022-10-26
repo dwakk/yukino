@@ -73,13 +73,13 @@ module.exports = {
 	}).catch(e => {
         if (data.guild.language === "fr") {
             const errembed = new EmbedBuilder()
-            .setDescription(':x: - Une erreur est survenue, peut-être un caractère non supporté ?')
+            .setDescription('💢 - Une erreur est survenue, peut-être un caractère non supporté ?')
             .setColor('Red');
             console.log(e);
             return interaction.reply({embeds: [errembed]})
         } else {
             const errembed = new EmbedBuilder()
-            .setDescription(':x: - An error occured, maybe an unsupported character ?')
+            .setDescription('💢 - An error occured, maybe an unsupported character ?')
             .setColor('Red');
             console.log(e);
             return interaction.reply({embeds: [errembed]})

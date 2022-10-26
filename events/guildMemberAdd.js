@@ -1,7 +1,6 @@
 const client = require('..');
 
 client.on("guildMemberAdd", async (member) => {
-    await client.database.fetchUser(member.id);
     let guildData = await client.database.fetchGuild(member.guild.id);
     let data = {};
     data.guild = guildData;

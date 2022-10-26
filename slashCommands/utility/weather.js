@@ -30,19 +30,19 @@ module.exports = {
     run: async(client, interaction, data) => {
         let ville = interaction.options.getString('location');
         let degreeType = interaction.options.getString('degreetype');
-        if (ville.lenght <= 1 || !isNaN(ville)) return interaction.reply({content: ":x: - Invalid name", ephemeral: true});
+        if (ville.lenght <= 1 || !isNaN(ville)) return interaction.reply({content: "💢 - Invalid name", ephemeral: true});
 
         weather.find({search: ville, degreeType: degreeType, lang: data.guild.language}, function(err, result) {
             if(err) console.log(err).then(() => {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - An error occured, maybe an invalid location ?")
+                .setDescription("💢 - An error occured, maybe an invalid location ?")
                 .setColor("Red");
                 return interaction.reply({embeds: [embed], ephemeral: true});
             });
 
             if(!result[0]) {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - Invalid location")
+                .setDescription("💢 - Invalid location")
                 .setColor("Red");
                 return interaction.reply({embeds: [embed], ephemeral: true});
             };

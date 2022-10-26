@@ -9,8 +9,8 @@ module.exports = {
     fr: "Supprime un certain nombre de messages",
 	cooldown: 3000,
 	type: ApplicationCommandType.ChatInput,
-    userPerms: ["ManageChannels"],
-    botPerms: ["ManageChannels"],
+    userPerms: ["ManageMessages"],
+    botPerms: ["ManageMessages"],
     options: [
         {
             name: "number",

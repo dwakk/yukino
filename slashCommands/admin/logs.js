@@ -36,12 +36,12 @@ module.exports = {
             if (channel.isText === false) {
                 if (data.guild.language === "fr") {
                     const embed = new EmbedBuilder()
-                    .setDescription(":x: - Le salon n'est pas textuel")
+                    .setDescription("💢 - Le salon n'est pas textuel")
                     .setColor("Red");
                     return interaction.reply({embeds: [embed], ephemeral: true});
                 } else {
                     const embed = new EmbedBuilder()
-                    .setDescription(":x: - This channel isn't textual")
+                    .setDescription("💢 - This channel isn't textual")
                     .setColor("Red");
                     return interaction.reply({embeds: [embed], ephemeral: true});
                 };

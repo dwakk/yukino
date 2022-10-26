@@ -2,9 +2,9 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ApplicationCommandType, B
 const reddit = require('reddit-fetch')
 
 module.exports = {
-	name: "yukino",
-	description: "Unstable | Get a random pic of Yukino (r/Yukinoshitayukino)",
-    fr: "Instable | Envoie une image de Yukino (r/Yukinoshitayukino)",
+	name: "yui",
+	description: "Unstable | Get a random pic of Yui (r/Yahallo)",
+    fr: "Instable | Envoie une image de Yui (r/Yahallo)",
 	type: ApplicationCommandType.ChatInput,
 	cooldown: 3000,
     options: [
@@ -31,12 +31,11 @@ module.exports = {
             };
         };
         reddit({
-            subreddit: "Yukinoshitayukino",
+            subreddit: "Yahallo",
             allowNSFW: nsfw,
             allowCrossPost: false,
             allowVideo: false
         }).then(p => {
-            console.log(p)
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
                 .setTitle(`Crédits: u/${p.author}`)

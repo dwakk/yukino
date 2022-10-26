@@ -7,7 +7,8 @@ client.on("ready", () => {
 		{ name: `${client.guilds.cache.size} Servers`, type: ActivityType.Listening },
 		{ name: `${client.users.cache.size} Users`, type: ActivityType.Watching },
 		{ name: `Slash Commands!`, type: ActivityType.Playing },
-		{ name: "Bilingual!", type: ActivityType.Streaming},
+		{ name: "Bilingual!", type: ActivityType.Watching},
+		{ name: "v1.0.1", type: ActivityType.Competing},
 	];
 	let i = 0;
 	setInterval(() => {

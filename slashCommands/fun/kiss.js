@@ -20,7 +20,7 @@ module.exports = {
         api.gif("kiss").then(res => {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setDescription(`**${interaction.member.user.username}** embrasse **${member.username}**`)
+                .setDescription(`**${interaction.member.displayName}** embrasse **${member.username}**`)
                 .setImage(res)
                 .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})
@@ -28,7 +28,7 @@ module.exports = {
                 return interaction.reply({ embeds: [embed]});
             } else {
                 const embed = new EmbedBuilder()
-                .setDescription(`**${interaction.member.user.username}** kisses **${member.username}**`)
+                .setDescription(`**${interaction.member.displayName}** kisses **${member.username}**`)
                 .setImage(res)
                 .setColor("White")
                 .setFooter({iconURL: client.user.avatarURL(), text: client.user.tag})

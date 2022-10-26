@@ -35,12 +35,12 @@ module.exports = {
         if(!target.bannable || target.id === client.id || target.id === mod.id) {
             if (data.guild.language === "fr") {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - Je ne peux pas bannir ce membre")
+                .setDescription("💢 - Je ne peux pas bannir ce membre")
                 .setColor("Red")
                 return interaction.reply({embeds: [embed], ephemeral: true});
             } else {
                 const embed = new EmbedBuilder()
-                .setDescription(":x: - I can't ban this member")
+                .setDescription("💢 - I can't ban this member")
                 .setColor("Red")
                 return interaction.reply({embeds: [embed], ephemeral: true});
             }
@@ -49,12 +49,12 @@ module.exports = {
         if(mod.roles.highest.comparePositionTo(interaction.guild.members.cache.get(target.id).roles.highest) >= 0 && mod.id != interaction.guild.ownerId) {
            if (data.guild.language === "fr") {
             const embed = new EmbedBuilder()
-            .setDescription(":x: - Ce membre a un rôle plus haut que vous")
+            .setDescription("💢 - Ce membre a un rôle plus haut que vous")
             .setColor("Red");
             return interaction.reply({embeds: [embed], ephemeral: true});
            } else {
             const embed = new EmbedBuilder()
-            .setDescription(":x: - This member has an higher role than yours")
+            .setDescription("💢 - This member has an higher role than yours")
             .setColor("Red");
             return interaction.reply({embeds: [embed], ephemeral: true});
            }
@@ -63,7 +63,7 @@ module.exports = {
         if (data.guild.language === "fr") {
             const embed = new EmbedBuilder()
             .setTitle("Membre banni")
-            .setDescription(`${target.user.tag} a été banni`)
+            .setDescription(`<@${target.id}> a été banni`)
             .addFields(
                 { name: "ID", value: target.id},
                 { name: "Raison", value: raison ? raison : "N/A"},
@@ -100,7 +100,7 @@ module.exports = {
         } else {
             const embed = new EmbedBuilder()
             .setTitle("Member banned")
-            .setDescription(`${target.user.tag} has been banned`)
+            .setDescription(`<@${target.id}> has been banned`)
             .addFields(
                 { name: "ID", value: target.id},
                 { name: "Reason", value: raison ? raison : "None"},

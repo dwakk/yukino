@@ -6,6 +6,8 @@ const config = require('../config.json');
 const cooldown = new Collection();
 
 client.on('interactionCreate', async interaction => {
+    console.log(`interaction in ${interaction.guild.name}`)
+    
 	const slashCommand = client.slashCommands.get(interaction.commandName);
 	let guildData = await client.database.fetchGuild(interaction.guild.id);
 	let data = {};

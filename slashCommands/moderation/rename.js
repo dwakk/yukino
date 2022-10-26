@@ -81,7 +81,7 @@ module.exports = {
         } else {
             const embed = new EmbedBuilder()
             .setTitle("Member renamed")
-            .setDescription(`${member.user.tag} has been renamed`)
+            .setDescription(`<@${member.id}> has been renamed`)
             .addFields(
                 { name: "Old nickname", value: member.displayName},
                 { name: "Moderator", value: `<@${interaction.member.id}>`}
