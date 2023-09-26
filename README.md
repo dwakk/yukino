@@ -1,4 +1,6 @@
-Multi-purpose bot written in JavaScript using the discord.js library.
+# yukino
+
+Multi-purpose bot written in JavaScript using the discord.js library.\
 My first big JavaScript project.
 
 Credits: 
